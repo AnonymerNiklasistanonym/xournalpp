@@ -14,6 +14,7 @@
 #include "control/AudioController.h"                             // for Audi...
 #include "control/ClipboardHandler.h"                            // for Clip...
 #include "control/CompassController.h"                           // for Comp...
+#include "control/PluginNotifier.h"                              // for Plug...
 #include "control/RecentManager.h"                               // for Rece...
 #include "control/ScrollHandler.h"                               // for Scro...
 #include "control/SetsquareController.h"                         // for Sets...
@@ -173,6 +174,10 @@ Control::Control(GApplication* gtkApp, GladeSearchpath* gladeSearchPath, bool di
 
     this->pluginController = new PluginController(this);
     this->pluginController->registerToolbar();
+
+    this->pluginNotifier = std::make_unique<PluginNotifier>(this);
+    this->pluginNotifier->registerListener(this);
+    this->undoRedo->addUndoRedoListener(this->pluginNotifier.get());
 }
 
 Control::~Control() {
@@ -2089,6 +2094,11 @@ void Control::quit(bool allowCancel) {
 #ifdef ENABLE_AUDIO
             if (audioController) {
                 audioController->stopRecording();
+            }
+#endif
+#ifdef ENABLE_PLUGINS
+            if (pluginController) {
+                pluginController->broadcast("quit");
             }
 #endif
             this->scheduler->lock();

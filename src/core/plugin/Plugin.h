@@ -133,6 +133,11 @@ public:
     void registerToolButton(ToolMenuHandler* toolMenuHandler);
     void registerPlaceholders(ToolMenuHandler* toolMenuHandler);
 
+    // Add/Remove/Get event listener
+    void addEventListener(std::string eventName, std::string callback);
+    void removeEventListener(std::string eventName);
+    auto getEventListeners() const -> std::unordered_map<std::string, std::string>;
+
     /// Execute menu entry
     void executeMenuEntry(MenuEntry* entry);
     // Execute toolbar button
@@ -198,6 +203,7 @@ private:
     std::vector<ToolbarButtonEntry> toolbarButtonEntries;  ///< All registered toolbar button entries
     std::unordered_map<std::string, std::unique_ptr<ToolbarPlaceholderEntry>>
             toolbarPlaceholderEntries;  ///< Storage for toolbar placeholder entries
+    std::unordered_map<std::string, std::string> eventListeners;
 
     std::string name;             ///< Plugin name
     std::string description;      ///< Description of the plugin

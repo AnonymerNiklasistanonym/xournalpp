@@ -573,6 +573,36 @@ static int applib_registerUi(lua_State* L) {
 }
 
 /**
+ * Connects a signal (from PluginNotifier.h) to a callback function defined in the plugin
+ *
+ * Example: app.addEventListener("pageChanged", "updatePageTime");
+ *          connects the "pageChanged" signal to the callback function named "updatePageTime"
+ */
+static int applib_addEventListener(lua_State* L) {
+    Plugin* plugin = Plugin::getPluginFromLua(L);
+
+    const char* signalName = luaL_checkstring(L, 1);
+    const char* callback = luaL_checkstring(L, 2);
+
+    plugin->addEventListener(signalName, callback);
+    return 0;
+}
+
+/**
+ * Disconnects a signal connected to via app.addEventListener
+ *
+ * Example: app.removeEventListener("pageChanged")
+ */
+static int applib_removeEventListener(lua_State* L) {
+    Plugin* plugin = Plugin::getPluginFromLua(L);
+
+    const char* signalName = luaL_checkstring(L, 1);
+
+    plugin->removeEventListener(signalName);
+    return 0;
+}
+
+/**
  * Helper function to convert Lua stack items to GVariant*
  * Returns a floating reference to a new GVariant instance.
  */
@@ -3846,6 +3876,8 @@ static const luaL_Reg applib[] = {
         {"openFile", applib_openFile},
         {"registerPlaceholder", applib_registerPlaceholder},
         {"setPlaceholderValue", applib_setPlaceholderValue},
+        {"addEventListener", applib_addEventListener},
+        {"removeEventListener", applib_removeEventListener},
         {"getFonts", applib_getFonts},
         {"getFont", applib_getFont},
         {"setFont", applib_setFont},

@@ -55,6 +55,7 @@ class PageTypeHandler;
 class BaseExportJob;
 class LayerController;
 class PluginController;
+class PluginNotifier;
 class Document;
 class EditSelection;
 class Element;
@@ -562,6 +563,7 @@ private:
      * Manage all Xournal++ plugins
      */
     PluginController* pluginController;
+    std::unique_ptr<PluginNotifier> pluginNotifier;
 
     std::unique_ptr<ActionDatabase> actionDB;
     template <Action a>

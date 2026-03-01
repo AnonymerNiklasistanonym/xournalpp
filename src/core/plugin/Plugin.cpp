@@ -251,7 +251,8 @@ void Plugin::loadScript() {
         XojMsgBox::showPluginMessage(name, errMsg, true);
 
         // Error out if file can't be read
-        g_warning("Could not load plugin Lua file. Error: \"%s\", error code: %d (syntax error: %s)", errMsg, status, status == LUA_ERRSYNTAX ? "true" : "false");
+        g_warning("Could not load plugin Lua file. Error: \"%s\", error code: %d (syntax error: %s)", errMsg, status,
+                  status == LUA_ERRSYNTAX ? "true" : "false");
         this->valid = false;
         return;
     }
@@ -363,5 +364,16 @@ void Plugin::setPlaceholderValue(const std::string& toolbarId, const std::string
         g_warning("setPlaceholderValue: placeholder id '%s' does not exist", prefixedId.c_str());
     }
 }
+
+void Plugin::addEventListener(std::string eventName, std::string callback) {
+    eventListeners.insert({eventName, callback});
+    g_message("Plugin \"%s\" Event Listener added for \"%s\" -> \"%s\"", name.c_str(), eventName.c_str(),
+              callback.c_str());
+}
+void Plugin::removeEventListener(std::string eventName) {
+    eventListeners.erase(eventName);
+    g_message("Plugin \"%s\" Event Listener removed for \"%s\"", name.c_str(), eventName.c_str());
+}
+auto Plugin::getEventListeners() const -> std::unordered_map<std::string, std::string> { return eventListeners; }
 
 #endif

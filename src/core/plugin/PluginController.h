@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <limits>  // for numeric_limits
 #include <memory>
 #include <string>
 #include <vector>
@@ -48,6 +49,8 @@ public:
      * Show Plugin manager Dialog
      */
     void showPluginManager() const;
+
+    void broadcast(std::string eventName, long mode = std::numeric_limits<long>::max());
 
 private:
     /**

@@ -187,3 +187,16 @@ void PluginController::registerToolButtons(ToolMenuHandler* toolMenuHandler) {
     }
 #endif
 }
+
+void PluginController::broadcast(std::string eventName, long mode) {
+#ifdef ENABLE_PLUGINS
+    g_message("Broadcast event \"%s\" to plugins", eventName.c_str());
+    for (auto&& p: this->plugins) {
+        auto eventListeners = p->getEventListeners();
+        if (auto fnc = eventListeners.find(eventName); fnc != eventListeners.end()) {
+            g_message("Broadcast event \"%s\" to plugin \"%s\"", eventName.c_str(), p->getName().c_str());
+            p->callFunction(fnc->second, mode);
+        }
+    }
+#endif
+}
